@@ -174,23 +174,37 @@
 
         var check = true
 
-        function done_bucket2(bucket) {
-            console.log(bucket)
+        function done_bucket2(num) {
+            console.log(num)
             if (check) {
                 var inputDocumnet = document.createElement("input")
                 inputDocumnet.setAttribute("placeholder", '수정을 해주세요.')
                 inputDocumnet.className = 'update'
-                inputDocumnet.id = bucket
-                $('#' + bucket).replaceWith(inputDocumnet)
+                inputDocumnet.id = num
+                $('#' + num).replaceWith(inputDocumnet)
 
-                console.log(bucket)
+                console.log(num)
                 check = false
             } else {
                 var inputDocumnet = document.createElement("h2")
-                inputDocumnet.id = bucket
+                inputDocumnet.id = num
                 //DB 넣고 windows.loacation.reload()
-                inputDocumnet.textContent = '◻️' + $('#' + bucket).val()
-                $('#' + bucket).replaceWith(inputDocumnet)
+
+                let formData = new FormData();
+                formData.append("num_give", num);
+                formData.append("bucket_give", $('#' + num).val());
+                /*
+                    {
+                        "num_give" : num
+                        "bucket_give" : bucket
+                    }
+                */
+                fetch('/ddd', { method: "POST", body: formData, }).then((response) => response.json()).then((data) => {
+                    window.location.reload()
+                });
+
+                inputDocumnet.textContent = '◻️' + $('#' + num).val()
+                $('#' + num).replaceWith(inputDocumnet)
                 alert('수정이 완료되었습니다.')
                 check = true
             }

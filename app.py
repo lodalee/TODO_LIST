@@ -36,5 +36,15 @@ def cccc():
     db.bucket.update_one({'bucket':bucket_receive},{'$set':{'done':1}})
     return jsonify({'result': "test"})
 
+@app.route("/ddd", methods=["POST"])
+def ddd():
+    
+    num_receive = request.form['num_give']
+    bucket_receive = request.form['bucket_give']
+    print(bucket_receive)
+    
+    db.bucket.update_one({'num': int(num_receive)},{'$set':{'bucket':bucket_receive}})
+    return jsonify({'result': "test"})
+
 if __name__ == '__main__':
     app.run('0.0.0.0', port=5000, debug=True)
