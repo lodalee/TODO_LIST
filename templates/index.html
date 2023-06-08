@@ -1,0 +1,251 @@
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js"
+        integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM"
+        crossorigin="anonymous"></script>
+
+    <link
+        href="https://fonts.googleapis.com/css2?family=Bad+Script&family=Gamja+Flower&family=Nanum+Gothic+Coding&family=Nanum+Pen+Script&family=Noto+Sans+KR&family=Song+Myung&display=swap"
+        rel="stylesheet">
+
+    <title>TODO LIST PAGE</title>
+    <style>
+        .top {
+            width: 100%;
+            height: 450px;
+
+            color: white;
+
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .top>img {
+            height: 400px;
+            width: 450px;
+        }
+
+        h1 {
+            text-align: center;
+            margin-top: 50px;
+            font-weight: bold;
+            font-family: 'Bad Script', cursive;
+            color: rgb(196, 151, 197);
+
+        }
+
+        .btn-r {
+            width: 100px;
+            height: 38px;
+            border-radius: 10px;
+            box-shadow: 0px 0px 5px 0px rgb(131, 176, 248);
+            background-color: #fff;
+            border: 0px;
+            font-weight: bold;
+            color: #727272;
+        }
+
+        .btn-r:hover {
+            background-color: rgb(201, 219, 247);
+            color: #444;
+        }
+
+        .btn-c {
+            width: 40px;
+            height: 40px;
+            border-radius: 50px;
+            box-shadow: 0px 0px 5px 0px rgb(131, 176, 248);
+            background-color: #fff;
+            border: 0px;
+            font-weight: bold;
+            color: #727272;
+            margin-right: 10px;
+            font-size: 13px;
+        }
+
+        .btn-c:hover {
+            background-color: rgb(201, 219, 247);
+            color: #444;
+        }
+
+        .mybox {
+            width: 95%;
+            max-width: 700px;
+            padding: 20px;
+            box-shadow: 0px 0px 5px 0px rgb(97, 151, 240);
+            margin: 20px auto;
+        }
+
+        .mybucket {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .mybucket>input {
+            width: 70%;
+        }
+
+        .mybox>li {
+            display: flex;
+            flex-direction: row;
+            align-items: center;
+            justify-content: center;
+
+            margin-bottom: 10px;
+            min-height: 48px;
+        }
+
+        .mybox>li>h2 {
+            max-width: 75%;
+            font-size: 20px;
+            font-weight: 500;
+            margin-right: auto;
+            margin-bottom: 0px;
+        }
+
+        .mybox>li>h2.done {
+            text-decoration: line-through;
+        }
+        .update {
+            max-width: 75%;
+            font-size: 20px;
+            font-weight: 500;
+            margin-right: auto;
+            margin-bottom: 0px;
+        }
+    </style>
+    <script>
+        $(document).ready(function () {
+            show_bucket();
+        });
+
+        function done_bucket(bucket) {
+
+            let formData = new FormData();
+            formData.append("bucket_give", bucket);
+
+            fetch('/cccc', { method: "POST", body: formData, }).then((response) => response.json()).then((data) => {
+                window.location.reload()
+            });
+        }
+
+        function show_bucket() {
+            fetch('/bucket').then(res => res.json()).then(data => {
+                let rows = data['result']
+                $('#bucket-list').empty()
+                rows.forEach((a) => {
+                    let bucket = a['bucket']
+                    let num = a['num']
+                    let temp_html
+                    console.log('test : ' + a['done'])
+                    if (a['done'] == 0) {
+                        temp_html = `<li>
+                                        <h2 id="${num}">◻️ ${bucket}</h2>
+                                        <button onclick="done_bucket(\'${a['bucket']}'\)" type="button" class="btn-c">✔️</button>
+                                        <button onclick="done_bucket2(\'${a['num']}'\)" type="button" class="btn-c">✏️</button>
+                                        <button onclick="done_bucket3()" type="button" class="btn-c">❌</button>
+                                    </li>`
+                    } else {
+                        temp_html = `<li>
+                                        <h2 id="${num}">✔️${bucket}</h2>
+                                        <button onclick="done_bucket2(\'${a['num']}'\)" type="button" class="btn-c">✏️</button>
+                                        <button onclick="done_bucket3()" type="button" class="btn-c">❌</button>
+                                    </li>`
+                    }
+
+                    $('#bucket-list').append(temp_html)
+                })
+            })
+        }
+
+        var check = true
+
+        function done_bucket2(bucket) {
+            console.log(bucket)
+            if (check) {
+                var inputDocumnet = document.createElement("input")
+                inputDocumnet.setAttribute("placeholder", '수정을 해주세요.')
+                inputDocumnet.className = 'update'
+                inputDocumnet.id = bucket
+                $('#' + bucket).replaceWith(inputDocumnet)
+
+                console.log(bucket)
+                check = false
+            } else {
+                var inputDocumnet = document.createElement("h2")
+                inputDocumnet.id = bucket
+                //DB 넣고 windows.loacation.reload()
+                inputDocumnet.textContent = '◻️'+ $('#' + bucket).val()
+                $('#' + bucket).replaceWith(inputDocumnet)
+                alert('msg')
+                check = true
+            }
+            fetch('/ddd', { method: "POST", body: formData, }).then((response) => response.json()).then((data) => {
+                window.location.reload()
+            });
+        }
+
+        function save_bucket() {
+            let bucket = $("#bucket").val();
+
+            let formData = new FormData();
+            formData.append("bucket_give", bucket);
+
+            fetch('/bucket', { method: "POST", body: formData, }).then((res) => res.json()).then((data) => {
+                alert(data["msg"]);
+                window.location.reload();
+            });
+        }
+
+
+    </script>
+</head>
+
+<body>
+    <h1>To Do List</h1>
+    <div class="top">
+        <img
+            src="https://r1.community.samsung.com/t5/image/serverpage/image-id/141368i8F105F6B57DB0E3D/image-size/large?v=v2&px=999">
+    </div>
+    <div class="mybox">
+        <div class="mybucket">
+            <input id="bucket" class="form-control" type="text" placeholder="to do list" />
+            <button onclick="save_bucket()" type="button" class="btn-r">기록하기</button>
+        </div>
+    </div>
+    <div class="mybox" id="bucket-list">
+        <li>
+            <h2>✔️ 호주에서 스카이다이빙 하기</h2>
+            <button onclick="done_bucket()" type="button" class="btn-c">✔️</button>
+            <button onclick="done_bucket2()" type="button" class="btn-c">✏️</button>
+            <button onclick="done_bucket3()" type="button" class="btn-c">❌</button>
+        </li>
+        <li>
+            <h2>◻️ 호주에서 스카이다이빙 하기</h2>
+            <button onclick="done_bucket()" type="button" class="btn-c">✔️</button>
+            <button onclick="done_bucket2()" type="button" class="btn-c">✏️</button>
+            <button onclick="done_bucket3()" type="button" class="btn-c">❌</button>
+        </li>
+        <li>
+            <h2>◻️ 호주에서 스카이다이빙 하기</h2>
+            <button onclick="done_bucket()" type="button" class="btn-c">✔️</button>
+            <button onclick="done_bucket2()" type="button" class="btn-c">✏️</button>
+            <button onclick="done_bucket3()" type="button" class="btn-c">❌</button>
+        </li>
+    </div>
+</body>
+
+</html>
