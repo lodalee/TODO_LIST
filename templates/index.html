@@ -119,6 +119,7 @@
         .mybox>li>h2.done {
             text-decoration: line-through;
         }
+
         .update {
             max-width: 75%;
             font-size: 20px;
@@ -188,14 +189,12 @@
                 var inputDocumnet = document.createElement("h2")
                 inputDocumnet.id = bucket
                 //DB 넣고 windows.loacation.reload()
-                inputDocumnet.textContent = '◻️'+ $('#' + bucket).val()
+                inputDocumnet.textContent = '◻️' + $('#' + bucket).val()
                 $('#' + bucket).replaceWith(inputDocumnet)
-                alert('msg')
+                alert('수정이 완료되었습니다.')
                 check = true
             }
-            fetch('/ddd', { method: "POST", body: formData, }).then((response) => response.json()).then((data) => {
-                window.location.reload()
-            });
+
         }
 
         function save_bucket() {
